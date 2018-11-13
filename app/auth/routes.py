@@ -1,6 +1,6 @@
-from . import api
+from . import auth_bp
 from .views import Register,UserProfile,Login,Logout
-api.add_resource(Register,'/register')
-api.add_resource(UserProfile,'/profile')
-api.add_resource(Login,'/login')
-api.add_resource(Logout,'/logout')
+auth_bp.add_url_rule('/register',view_func=Register.as_view('register'))
+auth_bp.add_url_rule('/profile',view_func=UserProfile.as_view('profile'))
+auth_bp.add_url_rule('/login',view_func=Login.as_view('login'))
+auth_bp.add_url_rule('/logout',view_func=Logout.as_view('logout'))

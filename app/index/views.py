@@ -1,13 +1,14 @@
-from flask_restful import Resource
 from flask_login import login_required,current_user
-from flask import request
+from flask import request,jsonify
 from .models import Post
 from app import db
-class Index(Resource):
-    def get(self):
-        return {"message":"Hello World"}
+from flask.views import MethodView
 
-class Article(Resource):
+class Index(MethodView):
+    def get(self):
+        return jsonify({"message":"Hello World"})
+
+class Article(MethodView):
     decorators = [login_required]
     def post(self):
         title = request.form['title']
@@ -16,6 +17,6 @@ class Article(Resource):
         article.author = current_user
         db.session.add(article)
         db.session.commit()
-        return {
+        return jsonify({
             "message":"add article successful."
-        }
+        })
