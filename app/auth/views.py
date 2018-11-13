@@ -1,8 +1,9 @@
-from flask_restful import Resource
+from flask_restful import Resource,abort
 from flask import request
 from .models import User
 from app import db,auth
 from flask_login import login_user,login_required,current_user,logout_user
+
 
 class Login(Resource):
     def post(self):
@@ -40,6 +41,8 @@ class Register(Resource):
                 db.session.add(user)
                 db.session.commit()
                 return {"message":"register successful!"}
+            else:
+                abort(409)
         
         return {"message":"register failed"}
 
