@@ -12,6 +12,8 @@ class User(UserMixin,db.Model):
     username = db.Column(db.String(20),unique=True,index=True)
     password_hash = db.Column(db.String(256))
     email = db.Column(db.String(50),unique=True,index=True)
+    posts = db.relationship('Post',backref='author',lazy='dynamic')
+
 
     def set_password(self,password):
         self.password_hash = generate_password_hash(password)

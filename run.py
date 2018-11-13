@@ -1,5 +1,6 @@
 from app  import create_app
 app = create_app('dev')
 
-from app import models
+from app.auth import models
+from app.index import models
 
