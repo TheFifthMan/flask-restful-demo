@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request
-from app.models import User
+from .models import User
 from app import db,auth
 from flask_login import login_user,login_required,current_user,logout_user
 
