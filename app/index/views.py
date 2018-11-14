@@ -1,4 +1,4 @@
-from flask_login import login_required,current_user
+# from flask_login import login_required,current_user
 from flask import request,jsonify
 from .models import Post
 from app import db
@@ -9,7 +9,6 @@ class Index(MethodView):
         return jsonify({"message":"Hello World"})
 
 class Article(MethodView):
-    decorators = [login_required]
     def post(self):
         title = request.form['title']
         body = request.form['body']
