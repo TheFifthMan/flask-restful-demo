@@ -10,6 +10,7 @@ class PagenationAPIMixin(object):
      def to_collection_dict(query,page,per_page,endpoint,**kwargs):
          resources = query.paginate(page,per_page,False)
          data = {
+             # 这里的resources.items是一个list,包含了所有的user
              "users":[item.to_dict() for item in resources.items],
               '_meta': {
                 'page': page,
@@ -65,7 +66,7 @@ class User(PagenationAPIMixin,db.Model):
         return check_password_hash(self.password_hash,password)
 
 
-
+    # 序列化
     def to_dict(self):
         data =  {
             "id": self.id,
