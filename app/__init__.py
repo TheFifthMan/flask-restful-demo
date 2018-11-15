@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 from config import Configuration
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -21,5 +21,17 @@ def create_app(config_name):
     app.register_blueprint(error_bp)
     from .user import user_bp
     app.register_blueprint(user_bp)
+
+    # 配置响应头
+    @app.after_request
+    def after_request(response):
+        # 不建议使用 * 但是在这里无所谓
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        if request.method == 'OPTIONS':
+            response.headers['Access-Control-Allow-Methods'] = 'DELETE, GET, POST, PUT'
+            headers = request.headers.get('Access-Control-Request-Headers')
+            if headers:
+                response.headers['Access-Control-Allow-Headers'] = headers
+        return response
 
     return app

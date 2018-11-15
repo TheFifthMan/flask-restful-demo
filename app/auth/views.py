@@ -3,20 +3,7 @@ from app.user.models import User
 from app import db,auth
 from flask.views import MethodView
 from app.authorization import basic_auth
-
-
-class Token(MethodView):
-    decorators = [basic_auth.login_required]
-    def get(self):
-        token = g.current_user.get_token()
-        db.session.commit()
-        return jsonify({'token':token})
-    
-    def delete(self):
-        g.current_user.revoke_token()
-        db.session.commit()
-        return '',204
-        
+from datetime import datetime,timedelta
        
 class Register(MethodView):
     def post(self):
@@ -42,4 +29,28 @@ class Register(MethodView):
         response.headers['Location'] = url_for('user.get_user',user_id=user.id)
         return response
 
+class Token(MethodView):
+    decorators=[basic_auth.login_required]
+    def get(self):
+        token_expiration = datetime.utcnow() + timedelta(seconds=3600)
+        token = g.current_user.generate_token(token_expiration)
+        db.session.commit()
+        return jsonify({
+            "token": token
+        })
+    
+    def delete(self):
+        g.current_user.token_expire = True
+        db.session.commit()
+        return jsonify({
+            "message":"delete token"
+        })
+
+    
+# class RefreshToken(MethodView):
+#     decorators=[basic_auth.login_required]
+#     def get(self):
+#         pass
+
+        
 

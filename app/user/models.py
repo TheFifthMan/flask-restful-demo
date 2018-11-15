@@ -1,9 +1,10 @@
 from app import db
 from werkzeug.security import generate_password_hash,check_password_hash
-from flask import url_for
+from flask import url_for,current_app
 from datetime import datetime,timedelta
 import base64
 import os 
+import jwt
 
 class PagenationAPIMixin(object):
      @staticmethod
@@ -36,28 +37,31 @@ class User(PagenationAPIMixin,db.Model):
     password_hash = db.Column(db.String(256))
     email = db.Column(db.String(50),unique=True,index=True)
     posts = db.relationship('Post',backref='author',lazy='dynamic')
-    token = db.Column(db.String(32))
-    token_expire = db.Column(db.DateTime)
-
-    def get_token(self,expires_in=3600):
-        now = datetime.now()
-        if self.token and self.token_expire > now + timedelta(seconds=60):
-            return self.token 
-        
-        self.token= base64.b64encode(os.urandom(24)).decode('utf-8')
-        self.token_expire = now + timedelta(seconds=expires_in)
-        db.session.add(self)
-        return self.token
+    token = db.Column(db.String(500))
+    # 有点重复的功能
+    token_expire = db.Column(db.Boolean,default=True)
+    token_expire_time = db.Column(db.DateTime)
     
-    def revoke_token(self):
-        self.token_expire = datetime.now() - timedelta(seconds=1)
-    
-    @staticmethod
-    def check_token(token):
-        user = User.query.filter_by(token=token).first()
-        if not user or user.token_expire < datetime.now():
-            return None
-        return user
+    def generate_token(self,token_expiration):
+        try:
+            payload = {
+                'exp': token_expiration,
+                'iss': 'ken',
+                'data': {
+                    'id': self.id,
+                },
+                'iat':datetime.now(),
+            }
+            self.token = jwt.encode(
+                payload,
+                current_app.config['SECRET_KEY'],
+                algorithm='HS256'
+            ).decode('utf-8')
+            self.token_expire = False
+            return self.token
+        except Exception as e:
+            print(e)
+            return e
 
     def set_password(self,password):
         self.password_hash = generate_password_hash(password)
