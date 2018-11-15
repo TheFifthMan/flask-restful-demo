@@ -38,10 +38,11 @@ class User(PagenationAPIMixin,db.Model):
     email = db.Column(db.String(50),unique=True,index=True)
     posts = db.relationship('Post',backref='author',lazy='dynamic')
     token = db.Column(db.String(500))
-    # 有点重复的功能
     token_expire = db.Column(db.Boolean,default=True)
+
+    # 有点重复的功能
     token_expire_time = db.Column(db.DateTime)
-    
+
     def generate_token(self,token_expiration):
         try:
             payload = {
@@ -89,3 +90,5 @@ class User(PagenationAPIMixin,db.Model):
         if new_user and 'password1' in data:
             self.set_password(data['password1'])
 
+    def __str__(self):
+        return "<user :{]>".format(self.username)
