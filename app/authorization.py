@@ -13,7 +13,6 @@ def verify_password(username,password):
     g.current_user = user
     return True
 
-
 @basic_auth.error_handler
 def error_handler():
     abort(401)
