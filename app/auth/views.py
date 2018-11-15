@@ -1,10 +1,22 @@
-from flask import request,abort,jsonify,url_for
+from flask import request,abort,jsonify,url_for,g
 from app.user.models import User
 from app import db,auth
 from flask.views import MethodView
+from app.authorization import basic_auth
+
 
 class Token(MethodView):
-    pass
+    decorators = [basic_auth.login_required]
+    def get(self):
+        token = g.current_user.get_token()
+        db.session.commit()
+        return jsonify({'token':token})
+    
+    def delete(self):
+        g.current_user.revoke_token()
+        db.session.commit()
+        return '',204
+        
        
 class Register(MethodView):
     def post(self):

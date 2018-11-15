@@ -56,7 +56,6 @@ class User(PagenationAPIMixin,db.Model):
         user = User.query.filter_by(token=token).first()
         if not user or user.token_expire < datetime.now():
             return None
-        
         return user
 
     def set_password(self,password):
