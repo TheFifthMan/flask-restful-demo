@@ -40,7 +40,7 @@ class Token(MethodView):
         })
     
     def delete(self):
-        g.current_user.token_expire = True
+        g.current_user.token_expire_time = datetime.now() - timedelta(seconds=1)
         db.session.commit()
         return jsonify({
             "message":"delete token"

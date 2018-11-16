@@ -34,6 +34,7 @@ def create_app(config_name):
                 if g.current_user.time_expire_time > datetime.now() + timedelta(seconds=1) and g.current_user.time_expire_time < datetime.now() + timedelta(seconds=60):
                     token_expire = datetime.now() + timedelta(seconds=3600)
                     refresh_token(token_expire)
+                    response.headers.add("Authorization","Bear "+g.current_user.token)
             except Exception as e:
                 print(e)
 

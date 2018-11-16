@@ -90,4 +90,4 @@ class User(PagenationAPIMixin,db.Model):
             self.set_password(data['password1'])
 
     def __str__(self):
-        return "<user :{]>".format(self.username)
+        return "<user :{}>".format(self.username)
