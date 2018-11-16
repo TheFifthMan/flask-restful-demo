@@ -38,7 +38,6 @@ class User(PagenationAPIMixin,db.Model):
     email = db.Column(db.String(50),unique=True,index=True)
     posts = db.relationship('Post',backref='author',lazy='dynamic')
     token = db.Column(db.String(500))
-    token_expire = db.Column(db.Boolean,default=True)
 
     # 有点重复的功能
     token_expire_time = db.Column(db.DateTime)
@@ -58,7 +57,7 @@ class User(PagenationAPIMixin,db.Model):
                 current_app.config['SECRET_KEY'],
                 algorithm='HS256'
             ).decode('utf-8')
-            self.token_expire = False
+            self.token_expire_time = token_expiration
             return self.token
         except Exception as e:
             print(e)

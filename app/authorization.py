@@ -2,6 +2,7 @@ from flask_httpauth import HTTPTokenAuth,HTTPBasicAuth
 from flask import g,abort,current_app
 from app.user.models import User
 import jwt
+from datetime import datetime,timedelta
 basic_auth = HTTPBasicAuth()
 token_auth = HTTPTokenAuth()
 
@@ -23,11 +24,12 @@ def verify_token(token):
         payload = jwt.decode(token, current_app.config['SECRET_KEY'])
         if ('data' in payload and 'id' in payload['data']):
             u = User.query.filter_by(id=payload['data']['id']).first()
-            if u and not u.token_expire:
+            if u and u.token_expire_time >= datetime.now() + timedelta(seconds=60):
                 g.current_user = u
                 return True
     except Exception as e:
         print(e)
+        abort(400)
     
     return False
 
@@ -36,3 +38,9 @@ def token_error_handler():
     abort(401)
 
 
+def refresh_token(token):
+    user = User.query.filter_by(token=token).first()
+    if user:
+        token_expire = datetime.now() + timedelta(seconds=600)
+        user.generate_token(token_expire)
+        db.session.commit()

@@ -32,7 +32,7 @@ class Register(MethodView):
 class Token(MethodView):
     decorators=[basic_auth.login_required]
     def get(self):
-        token_expiration = datetime.utcnow() + timedelta(seconds=3600)
+        token_expiration = datetime.now() + timedelta(seconds=3600)
         token = g.current_user.generate_token(token_expiration)
         db.session.commit()
         return jsonify({
