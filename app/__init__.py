@@ -29,14 +29,14 @@ def create_app(config_name):
     def after_request(response):
         # 不建议使用 * 但是在这里无所谓
         response.headers.add('Access-Control-Allow-Origin', '*')
-        if g.current_user:
-            try:
-                if g.current_user.time_expire_time > datetime.now() + timedelta(seconds=1) and g.current_user.time_expire_time < datetime.now() + timedelta(seconds=60):
-                    token_expire = datetime.now() + timedelta(seconds=3600)
-                    refresh_token(token_expire)
-                    response.headers.add("Authorization","Bear "+g.current_user.token)
-            except Exception as e:
-                print(e)
+        # if g.current_user:
+        #     try:
+        #         if g.current_user.time_expire_time > datetime.now() + timedelta(seconds=1) and g.current_user.time_expire_time < datetime.now() + timedelta(seconds=60):
+        #             token_expire = datetime.now() + timedelta(seconds=3600)
+        #             refresh_token(token_expire)
+        #             response.headers.add("Authorization","Bear "+g.current_user.token)
+        #     except Exception as e:
+        #         print(e)
 
         if request.method == 'OPTIONS':
             response.headers['Access-Control-Allow-Methods'] = 'DELETE, GET, POST, PUT'

@@ -38,9 +38,9 @@ def token_error_handler():
     abort(401)
 
 
-def refresh_token(token):
-    user = User.query.filter_by(token=token).first()
-    if user:
-        token_expire = datetime.now() + timedelta(seconds=600)
-        user.generate_token(token_expire)
-        db.session.commit()
+# def refresh_token(token):
+#     user = User.query.filter_by(token=token).first()
+#     if user:
+#         token_expire = datetime.now() + timedelta(seconds=600)
+#         user.generate_token(token_expire)
+#         db.session.commit()

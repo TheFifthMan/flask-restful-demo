@@ -45,3 +45,9 @@ class Token(MethodView):
         return jsonify({
             "message":"delete token"
         })
+
+
+# class Refresh_token(MethodView):
+#     decorators = [basic_auth.login_required]
+#     def get(self):
+#         pass
